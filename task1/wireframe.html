@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Marketing Signal Dashboard — v1 Wireframe</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0f1117;
+    --surface: #181c27;
+    --surface2: #1e2333;
+    --border: #2a2f42;
+    --text: #e8eaf0;
+    --muted: #6b7280;
+    --accent: #4f8ef7;
+    --green: #34d399;
+    --red: #f87171;
+    --yellow: #fbbf24;
+    --mono: 'DM Mono', monospace;
+    --sans: 'DM Sans', sans-serif;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* TOP BAR */
+  .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 32px;
+    height: 56px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .logo {
+    font-family: var(--mono);
+    font-size: 13px;
+    letter-spacing: 0.12em;
+    color: var(--accent);
+    text-transform: uppercase;
+  }
+  .topbar-right { display: flex; align-items: center; gap: 16px; }
+
+  /* BRAND SWITCHER */
+  select {
+    background: var(--surface2);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 6px 28px 6px 12px;
+    font-family: var(--sans);
+    font-size: 13px;
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236b7280' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+  }
+  select:focus { outline: none; border-color: var(--accent); }
+
+  /* DATE TABS */
+  .date-tabs { display: flex; gap: 2px; background: var(--surface2); border-radius: 7px; padding: 3px; }
+  .date-tab {
+    padding: 4px 12px;
+    border-radius: 5px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    color: var(--muted);
+    transition: all 0.15s;
+    border: none;
+    background: transparent;
+  }
+  .date-tab.active { background: var(--accent); color: #fff; }
+  .date-tab:hover:not(.active) { color: var(--text); }
+
+  /* MAIN */
+  main { flex: 1; padding: 28px 32px; max-width: 1200px; width: 100%; margin: 0 auto; }
+
+  /* FOCUS SIGNAL */
+  .focus-signal {
+    background: linear-gradient(135deg, #1a2540 0%, #1e2333 100%);
+    border: 1px solid #2a3a5c;
+    border-left: 3px solid var(--accent);
+    border-radius: 10px;
+    padding: 18px 24px;
+    margin-bottom: 28px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    animation: fadeSlide 0.4s ease;
+  }
+  .focus-signal .label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .focus-signal .message { font-size: 14px; color: var(--text); line-height: 1.5; }
+  .focus-signal .message strong { color: #fff; }
+  .focus-badge {
+    background: rgba(79,142,247,0.12);
+    border: 1px solid rgba(79,142,247,0.3);
+    border-radius: 20px;
+    padding: 6px 14px;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--accent);
+    white-space: nowrap;
+  }
+
+  /* SECTION HEADER */
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+  }
+  .section-title {
+    font-size: 11px;
+    font-family: var(--mono);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .sync-status {
+    font-size: 11px;
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .sync-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--green);
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  /* CHANNEL TABLE */
+  .channel-table {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .table-head {
+    display: grid;
+    grid-template-columns: 180px 1fr 1fr 1fr 1fr 1fr 110px;
+    padding: 10px 20px;
+    background: var(--surface2);
+    border-bottom: 1px solid var(--border);
+  }
+  .th {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 400;
+  }
+  .th:not(:first-child) { text-align: right; }
+
+  .channel-row {
+    display: grid;
+    grid-template-columns: 180px 1fr 1fr 1fr 1fr 1fr 110px;
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border);
+    transition: background 0.15s;
+    cursor: pointer;
+    animation: fadeSlide 0.35s ease both;
+  }
+  .channel-row:last-child { border-bottom: none; }
+  .channel-row:hover { background: var(--surface2); }
+
+  .channel-name {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+    font-weight: 500;
+  }
+  .channel-icon {
+    width: 28px; height: 28px;
+    border-radius: 7px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+
+  .cell {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: center;
+  }
+  .cell-val {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--text);
+  }
+  .cell-sub {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 1px;
+  }
+
+  /* TREND */
+  .trend {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 5px;
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 500;
+  }
+  .trend.up { color: var(--green); }
+  .trend.down { color: var(--red); }
+  .trend.flat { color: var(--muted); }
+  .trend-bar {
+    width: 60px;
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .trend-fill { height: 100%; border-radius: 2px; transition: width 0.6s ease; }
+
+  /* STALE WARNING */
+  .stale-row {
+    display: grid;
+    grid-template-columns: 180px 1fr;
+    padding: 12px 20px;
+    border-bottom: 1px solid var(--border);
+    background: rgba(251,191,36,0.04);
+  }
+  .stale-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(251,191,36,0.1);
+    border: 1px solid rgba(251,191,36,0.25);
+    border-radius: 5px;
+    padding: 4px 10px;
+    font-size: 11px;
+    color: var(--yellow);
+    font-family: var(--mono);
+  }
+
+  /* DERIVED LABEL */
+  .derived {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    font-size: 9px;
+    font-family: var(--mono);
+    color: var(--muted);
+    background: rgba(107,114,128,0.12);
+    border-radius: 3px;
+    padding: 1px 4px;
+    vertical-align: middle;
+    margin-left: 3px;
+  }
+
+  /* ANNOTATION */
+  .annotation {
+    margin-top: 16px;
+    padding: 14px 18px;
+    background: rgba(79,142,247,0.04);
+    border: 1px dashed rgba(79,142,247,0.2);
+    border-radius: 8px;
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+  .annotation strong { color: var(--accent); }
+
+  @keyframes fadeSlide {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* WIREFRAME BADGE */
+  .wireframe-badge {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 6px 14px;
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="logo">MSD · v1 Wireframe</div>
+  <div class="topbar-right">
+    <select id="brandSelect" onchange="switchBrand(this.value)">
+      <option value="alpha">Brand: AlphaWear</option>
+      <option value="beta">Brand: BetaFoods</option>
+      <option value="gamma">Brand: GammaFinance</option>
+    </select>
+    <div class="date-tabs">
+      <button class="date-tab active" onclick="setTab(this, '7d')">7 days</button>
+      <button class="date-tab" onclick="setTab(this, '30d')">30 days</button>
+      <button class="date-tab" onclick="setTab(this, 'custom')">Custom</button>
+    </div>
+  </div>
+</div>
+
+<main>
+
+  <!-- FOCUS SIGNAL -->
+  <div class="focus-signal" id="focusSignal">
+    <div style="flex:1">
+      <div class="label">⚡ Focus Signal</div>
+      <div class="message" id="focusMsg"></div>
+    </div>
+    <div class="focus-badge" id="focusBadge"></div>
+  </div>
+
+  <!-- CHANNEL TABLE -->
+  <div class="section-header">
+    <div class="section-title">Channel Performance</div>
+    <div class="sync-status">
+      <div class="sync-dot"></div>
+      Last synced: today 02:14 AM
+    </div>
+  </div>
+
+  <div class="channel-table" id="channelTable"></div>
+
+  <div class="annotation">
+    <strong>Wireframe annotations:</strong> Trend arrows and percentages are week-over-week vs the prior 7-day period. 
+    "Cost/Conv" is a <span class="derived">derived</span> field — calculated from spend ÷ conversions, not sourced from the API directly. 
+    The yellow row illustrates what a stale/disconnected channel looks like — the tool surfaces this explicitly rather than silently showing old data. 
+    The Focus Signal picks the channel with the largest absolute deviation from its 4-week rolling baseline.
+  </div>
+
+</main>
+
+<div class="wireframe-badge">WIREFRAME · NOT LIVE DATA</div>
+
+<script>
+const brands = {
+  alpha: {
+    name: "AlphaWear",
+    focus: { msg: "<strong>Google Ads</strong> is outperforming its 4-week baseline by <strong>+38%</strong> on conversions with spend flat. Consider reallocating budget from Meta.", badge: "↑ Google Ads +38%" },
+    channels: [
+      { icon: "🔵", name: "Google Ads", color: "#4285f4", spend: "$4,210", impressions: "312K", clicks: "8,840", conversions: "241", cpc: "$17.47", trend: "up", pct: "+38%" },
+      { icon: "🟣", name: "Meta Ads", color: "#1877f2", spend: "$3,100", impressions: "540K", clicks: "6,200", conversions: "89", cpc: "$34.83", trend: "down", pct: "−14%" },
+      { icon: "🟢", name: "Google Analytics", color: "#34d399", spend: "—", impressions: "—", clicks: "21,400", conversions: "310", cpc: "—", trend: "up", pct: "+9%" },
+      { icon: "📧", name: "Email (Klaviyo)", color: "#f59e0b", spend: "—", impressions: "28K", clicks: "1,840", conversions: "62", cpc: "—", trend: "flat", pct: "±0%" },
+    ],
+    stale: null
+  },
+  beta: {
+    name: "BetaFoods",
+    focus: { msg: "<strong>Meta Ads</strong> cost-per-conversion has risen <strong>+52%</strong> this week vs baseline — highest it has been in 6 weeks. Review creative fatigue.", badge: "⚠ Meta CPC +52%" },
+    channels: [
+      { icon: "🟣", name: "Meta Ads", color: "#1877f2", spend: "$6,800", impressions: "1.2M", clicks: "14,200", conversions: "104", cpc: "$65.38", trend: "down", pct: "−52%" },
+      { icon: "🔵", name: "Google Ads", color: "#4285f4", spend: "$2,900", impressions: "188K", clicks: "4,100", conversions: "88", cpc: "$32.95", trend: "up", pct: "+11%" },
+      { icon: "📧", name: "Email (Mailchimp)", color: "#f59e0b", spend: "—", impressions: "41K", clicks: "2,200", conversions: "78", cpc: "—", trend: "up", pct: "+6%" },
+    ],
+    stale: { name: "Google Analytics", reason: "Disconnected · last synced 3 days ago" }
+  },
+  gamma: {
+    name: "GammaFinance",
+    focus: { msg: "<strong>Email</strong> is your highest-converting channel this week — <strong>3.8× better</strong> cost-per-conversion than paid channels. Worth exploring volume expansion.", badge: "✦ Email 3.8× ROI" },
+    channels: [
+      { icon: "📧", name: "Email (Klaviyo)", color: "#f59e0b", spend: "—", impressions: "18K", clicks: "940", conversions: "112", cpc: "—", trend: "up", pct: "+22%" },
+      { icon: "🔵", name: "Google Ads", color: "#4285f4", spend: "$5,400", impressions: "280K", clicks: "6,800", conversions: "155", cpc: "$34.84", trend: "flat", pct: "±1%" },
+      { icon: "🟣", name: "Meta Ads", color: "#1877f2", spend: "$3,200", impressions: "420K", clicks: "5,100", conversions: "41", cpc: "$78.05", trend: "down", pct: "−8%" },
+    ],
+    stale: null
+  }
+};
+
+function setTab(el, val) {
+  document.querySelectorAll('.date-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+}
+
+function switchBrand(val) {
+  renderBrand(val);
+}
+
+function renderBrand(key) {
+  const b = brands[key];
+
+  // Focus signal
+  document.getElementById('focusMsg').innerHTML = b.focus.msg;
+  document.getElementById('focusBadge').textContent = b.focus.badge;
+
+  // Table
+  const table = document.getElementById('channelTable');
+  let html = `
+    <div class="table-head">
+      <div class="th">Channel</div>
+      <div class="th">Spend</div>
+      <div class="th">Impressions</div>
+      <div class="th">Clicks</div>
+      <div class="th">Conversions</div>
+      <div class="th">Cost/Conv <span class="derived">derived</span></div>
+      <div class="th">WoW Trend</div>
+    </div>
+  `;
+
+  b.channels.forEach((ch, i) => {
+    const trendColor = ch.trend === 'up' ? 'var(--green)' : ch.trend === 'down' ? 'var(--red)' : 'var(--muted)';
+    const arrow = ch.trend === 'up' ? '↑' : ch.trend === 'down' ? '↓' : '→';
+    const fillW = ch.trend === 'flat' ? 50 : ch.trend === 'up' ? 75 : 30;
+    html += `
+      <div class="channel-row" style="animation-delay:${i*0.06}s">
+        <div class="channel-name">
+          <div class="channel-icon" style="background:${ch.color}22">${ch.icon}</div>
+          ${ch.name}
+        </div>
+        <div class="cell"><span class="cell-val">${ch.spend}</span></div>
+        <div class="cell"><span class="cell-val">${ch.impressions}</span></div>
+        <div class="cell"><span class="cell-val">${ch.clicks}</span></div>
+        <div class="cell"><span class="cell-val">${ch.conversions}</span></div>
+        <div class="cell"><span class="cell-val">${ch.cpc}</span></div>
+        <div class="cell">
+          <div class="trend ${ch.trend}">${arrow} ${ch.pct}</div>
+          <div class="trend-bar" style="margin-top:5px">
+            <div class="trend-fill" style="width:${fillW}%;background:${trendColor}"></div>
+          </div>
+        </div>
+      </div>
+    `;
+  });
+
+  if (b.stale) {
+    html += `
+      <div class="stale-row">
+        <div class="channel-name" style="display:flex;align-items:center;gap:10px;font-size:13px;opacity:0.5">
+          <div class="channel-icon" style="background:#2a2f42;font-size:14px">🟢</div>
+          ${b.stale.name}
+        </div>
+        <div style="display:flex;align-items:center">
+          <span class="stale-badge">⚠ ${b.stale.reason}</span>
+        </div>
+      </div>
+    `;
+  }
+
+  table.innerHTML = html;
+}
+
+renderBrand('alpha');
+</script>
+</body>
+</html>
